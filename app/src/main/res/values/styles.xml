@@ -13,13 +13,24 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <!-- Customize your theme here. -->
+    <!-- Alert box. -->
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:background">#343434</item>
         <item name="android:textColor">#CACACA</item>
         <item name="android:textColorPrimary">#e7c660</item>
+    </style>
+
+    <!-- Separator. -->
+    <style name="Divider">
+        <item name="android:layout_width">300dp</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">#e7c660</item>
+        <item name="android:layout_marginBottom">60dp</item>
+
+
     </style>
 
 </resources>

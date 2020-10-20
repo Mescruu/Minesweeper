@@ -1,4 +1,4 @@
-package com.example.minesweeper;
+package com.example.minesweeper.common;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,13 +9,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.minesweeper.R;
+
 //klasa tworzaca customowy toast
 public class CustomToast {
 
     private Activity activity;
     private Context context;
 
-    CustomToast(Context context){
+    public CustomToast(Context context){
         Activity activity = (Activity) context;
 
         this.activity=activity;

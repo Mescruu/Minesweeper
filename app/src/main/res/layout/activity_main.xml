@@ -10,117 +10,48 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#343434"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="127dp"
-            android:orientation="horizontal">
+            android:layout_height="185dp"
+            android:padding="20dp"
+            app:srcCompat="@drawable/logo" />
 
-            <LinearLayout
-                android:layout_width="201dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/timeTextHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:background="#343434"
-                    android:fontFamily="monospace"
-                    android:gravity="fill_vertical"
-                    android:text="Time left"
-                    android:textAlignment="center"
-                    android:textColor="#CFCDCD"
-                    android:typeface="monospace" />
-
-                <TextView
-                    android:id="@+id/TimeText"
-                    android:layout_width="match_parent"
-                    android:layout_height="92dp"
-                    android:background="#343434"
-                    android:fontFamily="monospace"
-                    android:gravity="fill_vertical"
-                    android:layoutDirection="inherit"
-                    android:text="20.03"
-                    android:textAlignment="center"
-                    android:textColor="#CFCDCD"
-                    android:textSize="36sp"
-                    android:typeface="monospace" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/LoginTextHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:background="#343434"
-                    android:fontFamily="monospace"
-                    android:gravity="fill_vertical"
-                    android:text="Login"
-                    android:textAlignment="center"
-                    android:textColor="#CFCDCD"
-                    android:typeface="monospace" />
-
-                <TextView
-                    android:id="@+id/loginText"
-                    android:layout_width="match_parent"
-                    android:layout_height="92dp"
-                    android:autoText="true"
-                    android:background="#343434"
-                    android:fontFamily="monospace"
-                    android:gravity="fill_vertical"
-                    android:lineSpacingExtra="8sp"
-                    android:text="TextView"
-                    android:textAlignment="center"
-                    android:textColor="#CFCDCD"
-                    android:textSize="18sp" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/LogoText"
             android:layout_width="match_parent"
+            android:layout_height="174dp"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:lineSpacingExtra="8sp"
+            android:text="M I N E S W E E P E R"
+            android:textAlignment="center"
+            android:textColor="#CFCDCD"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:typeface="monospace"
+
+            android:shadowColor="#e7c660"
+            android:shadowDx="-4"
+            android:shadowDy="4"
+            android:shadowRadius="0.1"
+
+            />
+
+        <View style="@style/Divider"/>
+
+        <Button
+            android:id="@+id/newGameSolo"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#343434"
-            android:gravity="bottom"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#616161"
-                android:backgroundTintMode="src_over"
-                android:fontFamily="monospace"
-                android:text="Back"
-                android:typeface="monospace" />
-
-            <Button
-                android:id="@+id/restartButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#616161"
-                android:backgroundTintMode="src_over"
-                android:fontFamily="monospace"
-                android:text="Restart"
-                android:typeface="monospace" />
-
-        </LinearLayout>
-
-        <com.example.minesweeper.views.grid.Grid
-            android:id="@+id/minesweeperGridView"
-            android:layout_width="match_parent"
-            android:layout_height="518dp"
-            android:layout_centerHorizontal="true"
-            android:background="#343434" />
+            android:background="#616161"
+            android:gravity="center"
+            android:text="New game"
+            android:textAlignment="center"
+            android:textColor="#CFCDCD" />
 
     </LinearLayout>
 

@@ -1,30 +1,43 @@
 package com.example.minesweeper;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
+import android.os.CountDownTimer;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.minesweeper.common.CustomToast;
 import com.example.minesweeper.util.Generator; //zaimportowany generator tworzenia siatki
 import com.example.minesweeper.util.PrintGrid; //zaimportowana klasa tworzaca log mapy
 import com.example.minesweeper.views.grid.Cell;//zaimportowana klasa pola gry
-import com.example.minesweeper.MainActivity;//zaimportowana klasa pola gry
 
-public class GameEngine {
+import java.util.Observable; //klasa umożliwiajaca bycie obserwowanym przez inny obiekt
+
+
+public class GameEngine extends Observable {
 
     private static GameEngine instance;
 
-    public static final int BOMB_NUMBER = 6; //ilosc bomb
-    public static final int WIDTH = 10; //rozmiar siatki - szerokość     4/9
-    public static final int HEIGHT = 10;//rozmiar siatki - wysokość      4/10
+    public static final int BOMB_NUMBER = 12; //ilosc bomb
+    public static final int WIDTH = 12; //rozmiar siatki - szerokość     5/10/12
+    public static final int HEIGHT = 12;//rozmiar siatki - wysokość      5/10/12
+
+    //zegar
+    private CountDownTimer countDownTimer;
+    private boolean timeRunning;
+    private long timeLeft = 60000; //czas w milisekundach - metoda wymaga long (60 000 - 1 minut)
+    public long timeLeftStartValue = 60000; //czas w milisekundach - metoda wymaga long (60 000 - 1 minut)
+    private TextView countdownText; //wyswietlanie zegara
+
+    private boolean playerInGame; //true - gracz moze wykonywac ruchy, false - gracz przegrał, bądź skończył grę.
 
     //CustomToast obiekt
-    public  CustomToast customToast;
+    public CustomToast customToast;
 
     private Context context; //przechowywanie obiektów tekstu itd.
 
     private Cell[][] MinesweeperGrid = new Cell[WIDTH][HEIGHT]; //nowy typ pol z szerokoscia i dlugoscia
+
 
     public static GameEngine getInstance() {
         if( instance == null ){
@@ -39,6 +52,8 @@ public class GameEngine {
 
 
     public void createGrid(Context context){ //tworzenie siatki
+
+        playerInGame=true;//gracz moze wykonywac ruchy
 
         //utworzenie powiadomień
         customToast = new CustomToast(context);
@@ -83,24 +98,33 @@ public class GameEngine {
     }
 
     public void click( int x , int y ){
-        if( x >= 0 && y >= 0 && x < WIDTH && y < HEIGHT && !getCellAt(x,y).isClicked() ){ //jezeli pole zostało kliknięte
-            getCellAt(x,y).setClicked(); //ustaw pole jako kliknięte
 
-            if( getCellAt(x,y).getValue() == 0 ){ //pobierz pole i sprawdz jego wartość, czy jest zwykłym polem (nie mina i nie sąsiedztwo)
+        if(playerInGame){
 
-                for( int xt = -1 ; xt <= 1 ; xt++ ){ //
-                    for( int yt = -1 ; yt <= 1 ; yt++){
-                        if( xt != yt ){ //jezeli to nie jest to samo pole co wcześniej
-                            click(x + xt , y + yt);  //kliknij w pola obok, żeby wywołać planszę
+            if( x >= 0 && y >= 0 && x < WIDTH && y < HEIGHT && !getCellAt(x,y).isClicked() ){ //jezeli pole zostało kliknięte
+                getCellAt(x,y).setClicked(); //ustaw pole jako kliknięte
+
+                if( getCellAt(x,y).getValue() == 0 ){ //pobierz pole i sprawdz jego wartość, czy jest zwykłym polem (nie mina i nie sąsiedztwo)
+
+                    for( int xt = -1 ; xt <= 1 ; xt++ ){ //
+                        for( int yt = -1 ; yt <= 1 ; yt++){
+                            if( xt != yt ){ //jezeli to nie jest to samo pole co wcześniej
+                                click(x + xt , y + yt);  //kliknij w pola obok, żeby wywołać planszę
+                            }
                         }
                     }
                 }
+
+                //jezeli pole to bomba to koniec gry
+                if( getCellAt(x,y).isBomb() ){
+                    onGameLost(false); //wywolanie funkcji koniec gry
+                }else{
+                    long bonusTime = getCellAt(x,y).getValue()*10000; //dodawanie 10 sekund za "punkt"
+                    //customToast.showToast("seconds added");
+                    windUpTheClock(countdownText, bonusTime);
+                }
             }
 
-            //jezeli pole to bomba to koniec gry
-            if( getCellAt(x,y).isBomb() ){
-                onGameLost(); //wywolanie funkcji koniec gry
-            }
         }
 
         checkEnd(); //
@@ -122,7 +146,16 @@ public class GameEngine {
         }
 
         if( bombNotFound == 0 && notRevealed == 0 ){
-            Toast.makeText(context,"Game won", Toast.LENGTH_SHORT).show();
+            customToast.showToast("Game won!");
+            stopTimer();
+
+            //wprowadz zmiane
+            setChanged();
+            //poinformuj obserwatora
+            Object massage = "[userwin,"+timeLeft/1000+"]";//punkty = sekundy
+
+            notifyObservers(massage);
+
         }
         return false;
     }
@@ -134,25 +167,35 @@ public class GameEngine {
         getCellAt(x,y).invalidate(); //przerysuj mape gry
     }
 
-    private void onGameLost(){
+    private void onGameLost(boolean restart){
         //przejmij koenic gry
         //wyswietl komunikat o końcu gry
-        customToast.showToast("Game lost!");
+        playerInGame=false;//gracz nie może wykonywac ruchy
+        stopTimer(); //zatrzymaj zegar
+
+        //wprowadz zmiane
+        setChanged();
+
+        if(!restart){
+            customToast.showToast("Game lost!");
+
+            //poinformuj obserwatora
+            Object massage = "[userlost,"+timeLeft/1000+"]"; //punkty = sekundy
+            notifyObservers(massage);
+        }
 
         for ( int x = 0 ; x < WIDTH ; x++ ) {
             for (int y = 0; y < HEIGHT; y++) {
                 getCellAt(x,y).setRevealed();
             }
         }
-
-
     }
 
     public void stopGame(){
 
         customToast.showToast("Game end!");
 
-        onGameLost();
+        onGameLost(true);
 
         //Opóźnienie
         /*
@@ -168,5 +211,69 @@ public class GameEngine {
         */
     }
 
+
+    /*TIMER*/
+    public void windUpTheClock(TextView countdownText){
+        timeLeft=timeLeftStartValue;
+        windUpTheClock(countdownText,0);
+    }
+
+    //podkrecenie zegara
+    public void windUpTheClock(TextView countdownText, long timeLeftbonus){
+        this.countdownText = countdownText;
+        if(timeRunning)//jezeli zegar odlicza - zatrzymaj go
+            stopTimer(); //zatrzymanie zegara
+
+        timeLeft+=timeLeftbonus;
+        StartTimer(); //uruchomienie zegara
+        UpdateTimer(); //update zegara
+    }
+
+
+    private void StartTimer(){
+        //Utworzenie timera ze zmienną początkową i interwałem - 1000 oznacza milisekundy
+        countDownTimer = new CountDownTimer(timeLeft, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeft = millisUntilFinished;
+                UpdateTimer();
+            }
+
+            @Override
+            public void onFinish() { //w momencie kiedy czas się skończy.
+                String FinishText = "Time left!";
+                Log.e("",FinishText);
+
+                countdownText.setText(FinishText);
+            }
+        }.start();
+
+        timeRunning=true; //bool informujacy, czy zegar pracuje
+    }
+
+    private  void stopTimer(){ //funkcja zatrzymujaca zegar
+        countDownTimer.cancel();
+        timeRunning = false;
+    }
+
+    private   void UpdateTimer(){
+        int minutes = (int) timeLeft / 60000; //przerabiamy czas na minuty
+        int seconds = (int) timeLeft % 60000 /1000;
+
+        String TimeleftText;
+        TimeleftText = ""+minutes;
+        TimeleftText +=":";
+
+        if(seconds<10) TimeleftText+="0"; //zeby pokazywac zero przed jednosciami
+
+        TimeleftText +=seconds;
+
+        Log.e("",TimeleftText);
+
+        countdownText.setText(TimeleftText); //ustawienie czasu
+
+        if(timeLeft<=0) //jezeli czas sie skonczył
+            stopTimer(); //zakoncz czas
+    }
 
 }
