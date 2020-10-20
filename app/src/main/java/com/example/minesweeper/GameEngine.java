@@ -1,20 +1,26 @@
 package com.example.minesweeper;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.minesweeper.util.Generator; //zaimportowany generator tworzenia siatki
 import com.example.minesweeper.util.PrintGrid; //zaimportowana klasa tworzaca log mapy
 import com.example.minesweeper.views.grid.Cell;//zaimportowana klasa pola gry
+import com.example.minesweeper.MainActivity;//zaimportowana klasa pola gry
 
 public class GameEngine {
 
     private static GameEngine instance;
 
-    public static final int BOMB_NUMBER = 10; //ilosc bomb
-    public static final int WIDTH = 5; //rozmiar siatki - szerokość
-    public static final int HEIGHT = 10;//rozmiar siatki - wysokość
+    public static final int BOMB_NUMBER = 6; //ilosc bomb
+    public static final int WIDTH = 10; //rozmiar siatki - szerokość     4/9
+    public static final int HEIGHT = 10;//rozmiar siatki - wysokość      4/10
+
+    //CustomToast obiekt
+    public  CustomToast customToast;
 
     private Context context; //przechowywanie obiektów tekstu itd.
 
@@ -24,6 +30,8 @@ public class GameEngine {
         if( instance == null ){
             instance = new GameEngine();
         }
+
+        //tworzenie obiektu customToast
         return instance;
     }
 
@@ -31,13 +39,17 @@ public class GameEngine {
 
 
     public void createGrid(Context context){ //tworzenie siatki
-        Log.e("GameEngine","createGrid is working");
+
+        //utworzenie powiadomień
+        customToast = new CustomToast(context);
+        customToast.showToast("New game started");
+
         this.context = context; //dodanie go do kontekstu
 
         // create the grid and store it
         int[][] GeneratedGrid = Generator.generate(BOMB_NUMBER,WIDTH, HEIGHT);
 
-        PrintGrid.print(GeneratedGrid,WIDTH,HEIGHT); //wyswietlenie siatki
+        PrintGrid.print(GeneratedGrid,WIDTH,HEIGHT); //wyswietlenie siatki w logach
 
         setGrid(context,GeneratedGrid); //ustawienie siatki
     }
@@ -125,12 +137,36 @@ public class GameEngine {
     private void onGameLost(){
         //przejmij koenic gry
         //wyswietl komunikat o końcu gry
-        Toast.makeText(context,"Game lost", Toast.LENGTH_SHORT).show();
+        customToast.showToast("Game lost!");
 
         for ( int x = 0 ; x < WIDTH ; x++ ) {
             for (int y = 0; y < HEIGHT; y++) {
                 getCellAt(x,y).setRevealed();
             }
         }
+
+
     }
+
+    public void stopGame(){
+
+        customToast.showToast("Game end!");
+
+        onGameLost();
+
+        //Opóźnienie
+        /*
+        //delay
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                //po 5 sekundach wyświetlenie rozpoczęcie nowej gry
+                GameEngine.getInstance().createGrid(context);
+            }
+        }, 5000);   //5 seconds
+
+        */
+    }
+
+
 }

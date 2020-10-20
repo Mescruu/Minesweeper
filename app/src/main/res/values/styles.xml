@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">#616161</item>
+        <item name="colorPrimaryDark">#343434</item>
+        <item name="colorAccent">#CFCDCD</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -13,7 +13,13 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Customize your theme here. -->
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">#343434</item>
+        <item name="android:textColor">#CACACA</item>
+        <item name="android:textColorPrimary">#e7c660</item>
+    </style>
 
 </resources>
