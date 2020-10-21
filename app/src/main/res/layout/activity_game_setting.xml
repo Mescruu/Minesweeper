@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameSettingActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:background="#343434">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="331dp"
+            android:layout_height="134dp"
+            android:padding="10dp"
+            app:srcCompat="@drawable/settings" />
+
+        <TextView
+            android:id="@+id/difficultyText"
+            android:layout_width="match_parent"
+            android:layout_height="117dp"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:lineSpacingExtra="8sp"
+            android:text="Set difficulty level"
+            android:textAlignment="center"
+            android:textColor="#CFCDCD"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:typeface="monospace" />
+
+        <View style="@style/Divider"/>
+
+        <RadioGroup
+            android:id="@+id/RadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/difficulty1"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:buttonTint="#FFFFFF"
+                android:fontFamily="monospace"
+                android:freezesText="false"
+                android:text="Easy"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp" />
+
+            <RadioButton
+                android:id="@+id/difficulty3"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:buttonTint="#FFFFFF"
+                android:fontFamily="monospace"
+                android:freezesText="false"
+                android:text="Normal"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp" />
+
+            <RadioButton
+                android:id="@+id/difficulty2"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:buttonTint="#FFFFFF"
+                android:fontFamily="monospace"
+                android:freezesText="false"
+                android:text="Hard"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/confirmGameSettings"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textSize="24sp"
+            android:background="#616161"
+            android:gravity="center"
+            android:layout_marginTop="60dp"
+            android:text="Play"
+            android:textAlignment="center"
+            android:textColor="#CFCDCD" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

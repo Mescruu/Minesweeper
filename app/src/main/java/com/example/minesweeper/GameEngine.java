@@ -2,6 +2,7 @@ package com.example.minesweeper;
 
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,9 +19,9 @@ public class GameEngine extends Observable {
 
     private static GameEngine instance;
 
-    public static final int BOMB_NUMBER = 12; //ilosc bomb
-    public static final int WIDTH = 12; //rozmiar siatki - szerokość     5/10/12
-    public static final int HEIGHT = 12;//rozmiar siatki - wysokość      5/10/12
+    public static int BOMB_NUMBER; //ilosc bomb
+    public static int WIDTH; //rozmiar siatki - szerokość     5/10/12
+    public static int HEIGHT;//rozmiar siatki - wysokość      5/10/12
 
     //zegar
     private CountDownTimer countDownTimer;
@@ -119,7 +120,7 @@ public class GameEngine extends Observable {
                 if( getCellAt(x,y).isBomb() ){
                     onGameLost(false); //wywolanie funkcji koniec gry
                 }else{
-                    long bonusTime = getCellAt(x,y).getValue()*10000; //dodawanie 10 sekund za "punkt"
+                    long bonusTime = getCellAt(x,y).getValue()*1000; //dodawanie 1 sekundy za "punkt"
                     //customToast.showToast("seconds added");
                     windUpTheClock(countdownText, bonusTime);
                 }
@@ -168,6 +169,8 @@ public class GameEngine extends Observable {
     }
 
     private void onGameLost(boolean restart){
+        customToast.showToast("Game lost!");
+
         //przejmij koenic gry
         //wyswietl komunikat o końcu gry
         playerInGame=false;//gracz nie może wykonywac ruchy
@@ -176,39 +179,28 @@ public class GameEngine extends Observable {
         //wprowadz zmiane
         setChanged();
 
-        if(!restart){
-            customToast.showToast("Game lost!");
-
-            //poinformuj obserwatora
-            Object massage = "[userlost,"+timeLeft/1000+"]"; //punkty = sekundy
-            notifyObservers(massage);
-        }
-
         for ( int x = 0 ; x < WIDTH ; x++ ) {
             for (int y = 0; y < HEIGHT; y++) {
                 getCellAt(x,y).setRevealed();
             }
         }
+        if(!restart){
+                //Opóźnienie
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    //po 5 sekundach wyświetlenie rozpoczęcie nowej gry
+
+                        //poinformuj obserwatora
+                        Object massage = "[userlost,"+timeLeft/1000+"]"; //punkty = sekundy
+                        notifyObservers(massage);
+                    }
+            }, 1000);   //1 seconds
+        }
     }
 
     public void stopGame(){
-
-        customToast.showToast("Game end!");
-
         onGameLost(true);
-
-        //Opóźnienie
-        /*
-        //delay
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                //po 5 sekundach wyświetlenie rozpoczęcie nowej gry
-                GameEngine.getInstance().createGrid(context);
-            }
-        }, 5000);   //5 seconds
-
-        */
     }
 
 
@@ -243,8 +235,8 @@ public class GameEngine extends Observable {
             public void onFinish() { //w momencie kiedy czas się skończy.
                 String FinishText = "Time left!";
                 Log.e("",FinishText);
-
                 countdownText.setText(FinishText);
+                onGameLost(false);
             }
         }.start();
 

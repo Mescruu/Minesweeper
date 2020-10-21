@@ -15,7 +15,6 @@ public class Grid extends GridView {
         super(context,attrs);
 
         GameEngine.getInstance().createGrid(context);
-
         setNumColumns(GameEngine.WIDTH); //ustawienie ilosci kolumn
         setAdapter(new GridAdapter()); //
     }

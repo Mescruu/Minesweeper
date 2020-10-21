@@ -21,6 +21,7 @@
         <item name="android:background">#343434</item>
         <item name="android:textColor">#CACACA</item>
         <item name="android:textColorPrimary">#e7c660</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
     <!-- Separator. -->

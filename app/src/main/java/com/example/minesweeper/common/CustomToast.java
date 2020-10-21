@@ -33,7 +33,7 @@ public class CustomToast {
         TextView toastText = layout.findViewById(R.id.toast_text);
         toastText.setText(text);
         Toast toast = new Toast(this.context);
-        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.setGravity(Gravity.BOTTOM, 0, 20);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
