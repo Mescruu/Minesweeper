@@ -48,8 +48,6 @@ public class GameActivity extends AppCompatActivity {
         //tworzenie obiektu customToast
         customToast = new CustomToast(this);
 
-
-
         //deklaracja UI
         countdownText = findViewById(R.id.TimeText);
         backButton = findViewById(R.id.backButton);

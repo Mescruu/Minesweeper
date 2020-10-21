@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainMenuActivity">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,14 +17,14 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="185dp"
             android:padding="20dp"
             app:srcCompat="@drawable/logo" />
 
         <TextView
             android:id="@+id/LogoText"
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="174dp"
             android:gravity="center"
             android:lineSpacingExtra="8sp"
             android:text="M I N E S W E E P E R"
@@ -42,49 +43,13 @@
 
         <View style="@style/Divider"/>
 
-        <TextView
-            android:id="@+id/Info"
-            android:layout_width="match_parent"
-            android:layout_height="86dp"
-            android:gravity="center"
-            android:lineSpacingExtra="8sp"
-            android:text="LOGIN IN"
-            android:textAlignment="center"
-
-            android:textColor="#CFCDCD"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:typeface="monospace"
-
-            />
-
-        <EditText
-            android:id="@+id/editTextTextEmailAddress"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Email"
-            android:fontFamily="monospace"
-            android:textColor="#CFCDCD"
-            android:inputType="textEmailAddress" />
-
-        <EditText
-            android:id="@+id/editTextTextPassword"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Password"
-            android:fontFamily="monospace"
-            android:textColor="#CFCDCD"
-            android:inputType="textPassword" />
-
         <Button
-            android:id="@+id/SignIn"
+            android:id="@+id/newGameSolo"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:background="#616161"
             android:gravity="center"
-            android:text="Sign In"
+            android:text="New game"
             android:textAlignment="center"
             android:fontFamily="monospace"
             android:textColor="#CFCDCD"
@@ -92,12 +57,12 @@
             />
 
         <Button
-            android:id="@+id/SignUp"
+            android:id="@+id/logoutButton"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:background="#616161"
             android:gravity="center"
-            android:text="Sign Up"
+            android:text="Logout"
             android:textAlignment="center"
             android:fontFamily="monospace"
             android:textColor="#CFCDCD"
@@ -106,4 +71,4 @@
 
     </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

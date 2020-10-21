@@ -13,7 +13,6 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!-- Alert box. -->
@@ -29,8 +28,8 @@
         <item name="android:layout_width">300dp</item>
         <item name="android:layout_height">2dp</item>
         <item name="android:background">#e7c660</item>
-        <item name="android:layout_marginBottom">60dp</item>
-
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:layout_marginTop">20dp</item>
 
     </style>
 
