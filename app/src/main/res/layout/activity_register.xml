@@ -70,6 +70,16 @@
             android:inputType="textEmailAddress" />
 
         <EditText
+            android:id="@+id/editTextTextNick"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Nick"
+            android:fontFamily="monospace"
+            android:textColor="#CFCDCD"
+            android:inputType="text" />
+
+        <EditText
             android:id="@+id/editTextTextPassword"
             android:layout_width="240dp"
             android:layout_height="wrap_content"

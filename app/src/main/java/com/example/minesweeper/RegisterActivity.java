@@ -15,12 +15,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText emailId, password;
+    EditText emailId, password, nick;
     Button btnSignUp, btnSignIn;
     FirebaseAuth mFirebaseAuth;
+    String name;
 
     CustomToast customToast;
 
@@ -36,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextTextPassword);
+        nick = findViewById(R.id.editTextTextNick);
 
         //zarejestruj sie
         btnSignUp = findViewById(R.id.SignUp);
@@ -47,6 +51,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                 String email = emailId.getText().toString();
                 String pwd = password.getText().toString();
+                name = nick.getText().toString();
+
                 if(email.isEmpty()){
                     emailId.setError("Please enter email!");
                     emailId.requestFocus();
@@ -55,6 +61,13 @@ public class RegisterActivity extends AppCompatActivity {
                 //sprwadzenie czy wypełnił pola
                 if(pwd.isEmpty()){
                     password.setError("Please enter password!");
+                    password.requestFocus();
+                    errors=true;
+                }
+
+                //sprwadzenie czy wypełnił pola
+                if(name.isEmpty()){
+                    password.setError("Please enter nick!");
                     password.requestFocus();
                     errors=true;
                 }
@@ -72,7 +85,24 @@ public class RegisterActivity extends AppCompatActivity {
 
                             }else{ //wszystko poszlo dobrze
                                 //rozpocznij dalsza aktwynosc
-                                startActivity((new Intent(RegisterActivity.this, MainMenuActivity.class)));
+
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(name) //ustawienie nazwy
+                                        .build();
+
+                                //w momencie gdy nazwa gracza została dodana
+                                user.updateProfile(profileUpdates)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    startActivity((new Intent(RegisterActivity.this, MainMenuActivity.class)));
+                                                }
+                                            }
+                                        });
+
                             }
                         }
                     });
