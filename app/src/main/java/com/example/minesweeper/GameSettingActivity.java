@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import java.util.Random;
+
 public class GameSettingActivity extends AppCompatActivity {
 
     private Button confirmGameSettings;
@@ -64,7 +66,11 @@ public class GameSettingActivity extends AppCompatActivity {
                         break;
                 }
 
-                Intent intent = new Intent(GameSettingActivity.this, GameActivity.class);
+                //ustalenie seeda gry
+                Random generator = new Random();
+                GameEngine.SEED = generator.nextLong();
+
+                Intent intent = new Intent(GameSettingActivity.this, GameActivitySolo.class);
                 startActivity(intent);
             }
 

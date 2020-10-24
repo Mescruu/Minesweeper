@@ -13,6 +13,7 @@ import com.example.minesweeper.util.PrintGrid; //zaimportowana klasa tworzaca lo
 import com.example.minesweeper.views.grid.Cell;//zaimportowana klasa pola gry
 
 import java.util.Observable; //klasa umożliwiajaca bycie obserwowanym przez inny obiekt
+import java.util.Random;
 
 
 public class GameEngine extends Observable {
@@ -22,6 +23,8 @@ public class GameEngine extends Observable {
     public static int BOMB_NUMBER; //ilosc bomb
     public static int WIDTH; //rozmiar siatki - szerokość     5/10/12
     public static int HEIGHT;//rozmiar siatki - wysokość      5/10/12
+    public static Long SEED=100L;
+
 
     //zegar
     private CountDownTimer countDownTimer;
@@ -184,6 +187,12 @@ public class GameEngine extends Observable {
                 getCellAt(x,y).setRevealed();
             }
         }
+
+        //poinformuj obserwatora
+        Object massage = "[userlost,"+timeLeft/1000+"]"; //punkty = sekundy
+        notifyObservers(massage);
+
+        /*
         if(!restart){
                 //Opóźnienie
             Handler handler = new Handler();
@@ -191,12 +200,10 @@ public class GameEngine extends Observable {
                 public void run() {
                     //po 5 sekundach wyświetlenie rozpoczęcie nowej gry
 
-                        //poinformuj obserwatora
-                        Object massage = "[userlost,"+timeLeft/1000+"]"; //punkty = sekundy
-                        notifyObservers(massage);
+
                     }
             }, 1000);   //1 seconds
-        }
+        } */
     }
 
     public void stopGame(){
@@ -243,7 +250,7 @@ public class GameEngine extends Observable {
         timeRunning=true; //bool informujacy, czy zegar pracuje
     }
 
-    private  void stopTimer(){ //funkcja zatrzymujaca zegar
+    public void stopTimer(){ //funkcja zatrzymujaca zegar
         countDownTimer.cancel();
         timeRunning = false;
     }

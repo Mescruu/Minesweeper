@@ -9,11 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActiveUserList"></activity>
+        <activity android:name=".GameActivitySolo"></activity>
+        <activity
+            android:name=".ActiveUserList"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MainMenuActivity"
+        <activity
+            android:name=".MainMenuActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GameSettingActivity"

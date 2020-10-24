@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.minesweeper.common.CustomToast;
@@ -17,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -27,11 +30,18 @@ public class RegisterActivity extends AppCompatActivity {
 
     CustomToast customToast;
 
+    ImageView loadingImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        //animacja ladowania:
+        loadingImage = (ImageView)findViewById(R.id.loadingAnimation);
+        loadingImage.setBackgroundResource(R.drawable.loading_animation);
+        loadingImage.setVisibility(View.INVISIBLE);
 
         //tworzenie obiektu customToast
         customToast = new CustomToast(this);
@@ -73,15 +83,26 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if(errors==false){
+                    loadingImage.setVisibility(View.VISIBLE);
+                    // Get the background, which has been compiled to an AnimationDrawable object.
+                    AnimationDrawable frameAnimation = (AnimationDrawable) loadingImage.getBackground();
+
+                    // Start the animation (looped playback by default).
+                    frameAnimation.start();
+
+
                     //zarejestrowanie uzytkownika
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+
+
                             //jezeli cos poszlo nie tak
                             if(!task.isSuccessful()){
 
                                 //wyswietl powiadomienie, ze cos poszlo nie tak.
                                 customToast.showToast("Problem with singing in, please try again");
+                                loadingImage.setVisibility(View.INVISIBLE);
 
                             }else{ //wszystko poszlo dobrze
                                 //rozpocznij dalsza aktwynosc
@@ -98,7 +119,14 @@ public class RegisterActivity extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
+
+                                                    //przy tworzeniu gracza dodatkowo ustaw jego rekord w bazie (dla rankingu)
+                                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                                    database.getReference("players/"+name).setValue("");
+
                                                     startActivity((new Intent(RegisterActivity.this, MainMenuActivity.class)));
+                                                    loadingImage.setVisibility(View.INVISIBLE);
+
                                                 }
                                             }
                                         });
@@ -109,6 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }else{
                     //wyswietl powiadomienie z bledami
                     customToast.showToast("Fill the fields!");
+                    loadingImage.setVisibility(View.INVISIBLE);
                 }
             }
         });

@@ -1,15 +1,17 @@
 package com.example.minesweeper.util;
 
 
+import com.example.minesweeper.GameEngine;
+
 import java.util.Random;
 
 public class Generator {
 
     public static int[][] generate( int bombnumber , final int width , final int height){ //metoda generująca bomby
-        // Random for generating numbers
-        Random r = new Random(); //randomowa liczba służąca do generowania pól z minami
-
         int [][] grid = new int[width][height]; //tablica z siatką
+
+        // Random for generating numbers
+        Random r = new Random(GameEngine.SEED); //randomowa liczba służąca do generowania pól z minami
 
         //Tworzenie dwu-wymiarowej tablicy, która posłuży za siatkę
         for( int x = 0 ; x< width ;x++ ){

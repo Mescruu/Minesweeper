@@ -29,6 +29,6 @@
         android:background="#616161"
         android:backgroundTintMode="src_over"
         android:fontFamily="monospace"
-        android:text="Ready" />
+        android:text="Create challenge" />
 
 </RelativeLayout>

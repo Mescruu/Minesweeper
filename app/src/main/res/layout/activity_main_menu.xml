@@ -24,20 +24,19 @@
         <TextView
             android:id="@+id/LogoText"
             android:layout_width="match_parent"
-            android:layout_height="174dp"
+            android:layout_height="93dp"
             android:gravity="center"
             android:lineSpacingExtra="8sp"
+            android:shadowColor="#e7c660"
+            android:shadowDx="-4"
+            android:shadowDy="4"
+            android:shadowRadius="0.1"
             android:text="M I N E S W E E P E R"
             android:textAlignment="center"
             android:textColor="#CFCDCD"
             android:textSize="24sp"
             android:textStyle="bold"
             android:typeface="monospace"
-
-            android:shadowColor="#e7c660"
-            android:shadowDx="-4"
-            android:shadowDy="4"
-            android:shadowRadius="0.1"
 
             />
 
@@ -49,11 +48,36 @@
             android:layout_height="wrap_content"
             android:background="#616161"
             android:gravity="center"
-            android:text="New game"
+            android:text="New game solo"
+            android:textAlignment="center"
+            android:textColor="#CFCDCD"
+            android:layout_marginTop="30dp"
+            />
+
+        <Button
+            android:id="@+id/newGameMultiplayer"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:background="#616161"
+            android:gravity="center"
+            android:text="New game multiplayer"
             android:textAlignment="center"
             android:fontFamily="monospace"
             android:textColor="#CFCDCD"
             android:layout_marginTop="30dp"
+            />
+
+        <Button
+            android:id="@+id/rankButton"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:background="#616161"
+            android:gravity="center"
+            android:text="Rank"
+            android:textAlignment="center"
+            android:textColor="#CFCDCD"
+            android:layout_marginTop="30dp"
+            android:enabled="false"
             />
 
         <Button
@@ -64,7 +88,6 @@
             android:gravity="center"
             android:text="Logout"
             android:textAlignment="center"
-            android:fontFamily="monospace"
             android:textColor="#CFCDCD"
             android:layout_marginTop="30dp"
             />

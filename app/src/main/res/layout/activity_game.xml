@@ -62,7 +62,7 @@
                     android:background="#343434"
                     android:fontFamily="monospace"
                     android:gravity="fill_vertical"
-                    android:text="Login"
+                    android:text="Opponent"
                     android:textAlignment="center"
                     android:textColor="#CFCDCD"
                     android:typeface="monospace" />
@@ -100,17 +100,6 @@
                 android:backgroundTintMode="src_over"
                 android:fontFamily="monospace"
                 android:text="Back"
-                android:typeface="monospace" />
-
-            <Button
-                android:id="@+id/restartButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#616161"
-                android:backgroundTintMode="src_over"
-                android:fontFamily="monospace"
-                android:text="Restart"
                 android:typeface="monospace" />
 
         </LinearLayout>

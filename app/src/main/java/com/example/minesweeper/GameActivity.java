@@ -33,38 +33,39 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Observer;
+import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
 
     private TextView countdownText,loginText;
     private Button backButton;
-    private Button restartButton;
 
-    //obiekt firebase
-    FirebaseAuth mFirebaseAuth;
+    private GameEngine game;
 
     //obiekt wyswietlajacy Toasta
     public CustomToast customToast;
 
+
+
+    /*-----------------MULTI-----------------*/
+    //obiekt firebase
+    FirebaseAuth mFirebaseAuth;
+    FirebaseDatabase database;
+
     //gra multi
     String playerName="";
+    String opponentLogin="";
+
     String roomName = "";
     String role="";
-    String message="";
-
-    FirebaseDatabase database;
-    DatabaseReference messageRef;
-
+    /*-----------------MULTI-----------------*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-
         //ustawienie layoutu
-        setContentView(R.layout.activity_game);
+        setContentView(R.layout.activity_game_solo);
 
         //tworzenie obiektu customToast
         customToast = new CustomToast(this);
@@ -74,52 +75,16 @@ public class GameActivity extends AppCompatActivity {
         loginText = findViewById(R.id.loginText);
 
         backButton = findViewById(R.id.backButton);
-        restartButton = findViewById(R.id.restartButton);
 
+        /*--------------------MULTI---------------------*/
         //instancja firebaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
 
         //pobranie uzytkownika
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         //ustawienie loginu uzytkownika
-        loginText.setText(user.getDisplayName());
-
-
-        //Gra multi
-
-
-
-
-
-       final GameEngine game =  GameEngine.getInstance(); //utworzenie obiektu gry
-
-        // Utworzenie obserwatora
-        EngineObserver engObs = new EngineObserver(this);
-        // Dodanie obserwatora do obiektu game
-        game.addObserver(engObs);
-
-        /*
-        if(game.hasChanged()){
-            Log.e("","zmieniło sięę");
-            //game.notifyObservers();
-        }*/
-
-        //rozpoczecie gry
-        AlertBox(game, 1,"Start game?","The game start at the moment. Get ready!");
-
-
-        //Utworzenie pola dialogowego
-        //https://stackoverflow.com/questions/2478517/how-to-display-a-yes-no-dialog-box-on-android
-
-        /*
-        multi
-        */
-
-        restartButton.setEnabled(true);
-
-        database = FirebaseDatabase.getInstance();
-        //SharedPreferences preferences = getSharedPreferences("PREFS",0);
-        //playerName = preferences.getString("playerName","");
+        loginText.setText("...");
 
         //ustawienie loginu uzytkownika
         playerName = user.getDisplayName();
@@ -127,34 +92,32 @@ public class GameActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if(extras !=null){
             roomName = extras.getString("roomName");
-            if(roomName.equals(playerName)){
+            if(roomName.equals(playerName)){ //z nazwy pokoju zostaw ciag znakow o dlugosci playerName i porownaj do playerName
                 role="host";
+                opponentLogin="---";
             }else{
                 role="guest";
+                opponentLogin= roomName; //nazwa pokoju
             }
         }
+        Log.e("player name", "Player name taken from auth sys:" + playerName);
+        Log.e("player name", "Player name taken from room name:"+roomName);
+        Log.e("room name", roomName);
+        Log.e("Role", role);
 
-        //przycisk restartu.
-        restartButton.setOnClickListener(new View.OnClickListener(){
+        loginText.setText(opponentLogin);
 
-         //w przypadku użycia przycisku restartu.
-            @Override
-            public void onClick(View v) {
+        /*--------------------MULTI---------------------*/
+        game =  GameEngine.getInstance(); //utworzenie obiektu gry
 
-            restartButton.setEnabled(false);
-            message=role+":Poked";
-            messageRef.setValue(message);
-                //AlertBox(game, 0, "Restart game?","Are you sure? Your rank won't be saved"); //wyswietlenie powiadomienia o zakonczenie rozgrywki
-            }
-        });
+        // Utworzenie obserwatora
+        EngineObserver engObs = new EngineObserver(GameActivity.this);
+        // Dodanie obserwatora do obiektu game
+        game.addObserver(engObs);
 
-        //nasluchuj na nadciagajaca wiadomosc
-        messageRef = database.getReference("rooms/"+roomName+"/message");
-        message = role + "Poked!";
-        messageRef.setValue(message);
+        AlertBox(game, 1,"Start game?","The game start at the moment. Get ready!");
 
-        addRoomEventListener();
-
+        /*-----------------MULTI-----------------*/
         //przycisk konca gry.
         backButton.setOnClickListener(new View.OnClickListener(){
 
@@ -167,88 +130,46 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    private void addRoomEventListener(){
-        messageRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(role.equals("host")){
-                    if(snapshot.getValue(String.class).contains("guest")){
-                        restartButton.setEnabled(true);
-                        customToast.showToast(snapshot.getValue(String.class).replace("guest:",""));
-                    }
-                }else{
-                    if(snapshot.getValue(String.class).contains("host")){
-                        restartButton.setEnabled(true);
-                        customToast.showToast(snapshot.getValue(String.class).replace("host:",""));
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            //bład - ponów
-                messageRef.setValue(message);
-            }
-        });
-    }
 
     @Override
     public void onBackPressed() {
         customToast.showToast("Back button blocked!");
     }
 
-    public void gameWin(String score){
+    public void gameWin(String s){
+
+        int scoreNumber = Integer.parseInt(s);
+        s = ""+(scoreNumber+100); //za wygraną dodaj 100 punktów
+
+        final String score=s; //przekaz wartosc
 
         AlertDialog.Builder dialogBox = new AlertDialog.Builder(GameActivity.this, R.style.CustomAlertDialog).setTitle("You won!");
 
-        dialogBox.setMessage("Your score: "+score+" Do you want add your it to the rank?") //wiadomość w alertboxie
-                .setPositiveButton("YES",
+        dialogBox.setMessage("Your score: "+score+" Your score will be saved. Go back to main menu.") //wiadomość w alertboxie
+                .setPositiveButton("Confirm",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-
-                                dialog.dismiss(); //wyłacz dialog
+                                exitGame(dialog, score);
                             }
                         })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing
-                        Intent intent = new Intent(GameActivity.this, MainMenuActivity.class);
-                        startActivity(intent);
-
-                        finish();
-
-                    }
-                }).setCancelable(false) //uniemożliwia nacisniecia poza box
+                .setCancelable(false) //uniemożliwia nacisniecia poza box
                 .create()
                 .show();
     }
 
-    public void gameLost(String score){
+    public void gameLost(final String score){
 
         AlertDialog.Builder dialogBox = new AlertDialog.Builder(GameActivity.this, R.style.CustomAlertDialog).setTitle("You lost!");
 
-        dialogBox.setMessage("Your score: "+score+" Do you want play again?") //wiadomość w alertboxie
+        dialogBox.setMessage("Your score: "+score+" It could be worse..") //wiadomość w alertboxie
                 .setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-
-                                //zresetuj aktywnosc
-                                Intent intent = new Intent(GameActivity.this, GameActivity.class);
-                                startActivity(intent);
-
+                                exitGame(dialog, score); //sprobuj wylaczyc gre
                             }
                         })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing
-                        Intent intent = new Intent(GameActivity.this, MainMenuActivity.class);
-                        startActivity(intent);
-                        finish();
-
-                    }
-                }).setCancelable(false) //uniemożliwia nacisniecia poza box
+                .setCancelable(false) //uniemożliwia nacisniecia poza box
                 .create()
                 .show();
     }
@@ -272,15 +193,8 @@ public class GameActivity extends AppCompatActivity {
                                     case 1: //Game start
                                         StartGame(game);//rozpoczecie gry
                                         break;
-                                    case 0: //Game restart
-                                        game.stopGame(); //zakoncz rozgrywkę
-                                        StartGame(game);
-                                        break;
                                     case -1: //exit game
-                                        Intent intent = new Intent(GameActivity.this, MainMenuActivity.class);
-                                        startActivity(intent);
-                                        finish();
-
+                                        exitGame(dialog, "0"); //sprobuj wylaczyc gre
                                         break;
                                     default:
 
@@ -294,9 +208,7 @@ public class GameActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing
                         if(option==1){
-                            Intent intent = new Intent(GameActivity.this, MainMenuActivity.class);
-                            startActivity(intent);
-                            finish();
+                            exitGame(dialog,"0"); //sproboj wylaczyc gre
 
                         }else{
                             dialog.dismiss();
@@ -308,11 +220,86 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void StartGame(GameEngine game){
+
         //po 5 sekundach wyświetlenie rozpoczęcie nowej gry
         game.createGrid(this); //rozpoczecie gry
 
         //załaczenie tekstu zegara oraz jego zresetowanie
         game.windUpTheClock(countdownText);
+    }
+
+    public void exitGame(DialogInterface d, String s){
+
+    final DialogInterface dialog = d; //ustawienie jako final, zeby mozna bylo dissmisowac w onDataChange
+    final String score = s;
+        Log.e("Exit room:", playerName);
+        Log.e("Role", role);
+        Log.e("Score", score);
+
+
+        //jezeli gracz zdobyl jakies punkty
+        if(!score.equals("0")){
+            Log.e("score isnt 0",score);
+
+            if(role.equals("host")){
+                //ustaw liczbe punktow gracza 1
+                database.getReference("rooms")
+                        .child(roomName)
+                        .child("player1-score")
+                        .setValue(score);
+
+                Log.e("set score to player1",score);
+
+            }else{
+                //ustaw liczbe punktow gracza 2
+                database.getReference("rooms")
+                        .child(roomName)
+                        .child("player2-score")
+                        .setValue(score);
+
+                Log.e("set score to player2",score);
+            }
+        }
+
+
+        //referencja do pokoju
+        DatabaseReference roomRef = database.getReference("rooms").child(roomName);
+
+        //nasluchuj (raz) czy wystapila zmiana w pokoju
+        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if(role.equals("host")){ //jezeli Ty jestes graczem nr 1
+                    //ustaw pole jako rozegrane przez gracza 1 (gracz 2 moze odebrac wyzwanie
+                    database.getReference("rooms")
+                            .child(roomName)
+                            .child("played")
+                            .removeValue();
+                }else{ //jezeli jestes graczem 2.
+                    //utworzenie pola informujacego o usuniecie gry
+                    database.getReference("rooms")
+                            .child(roomName)
+                            .child("remove")
+                            .setValue("remove");
+                }
+
+
+                game.deleteObservers();
+                game.stopTimer();
+
+                dialog.dismiss(); //wylacz dialogbox
+
+                Intent intent = new Intent(GameActivity.this, MainMenuActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 }

@@ -26,21 +26,21 @@
             android:layout_height="86dp"
             android:gravity="center"
             android:lineSpacingExtra="8sp"
+            android:shadowColor="#e7c660"
+            android:shadowDx="-4"
+            android:shadowDy="4"
+            android:shadowRadius="0.1"
             android:text="M I N E S W E E P E R"
             android:textAlignment="center"
+
             android:textColor="#CFCDCD"
             android:textSize="24sp"
             android:textStyle="bold"
             android:typeface="monospace"
 
-            android:shadowColor="#e7c660"
-            android:shadowDx="-4"
-            android:shadowDy="4"
-            android:shadowRadius="0.1"
-
             />
 
-        <View style="@style/Divider"/>
+        <View style="@style/Divider" />
 
         <TextView
             android:id="@+id/Info"
@@ -62,50 +62,57 @@
             android:id="@+id/editTextTextEmailAddress"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:ems="10"
             android:hint="Email"
-            android:fontFamily="monospace"
-            android:textColor="#CFCDCD"
-            android:layout_marginTop="10dp"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColor="#CFCDCD" />
 
         <EditText
             android:id="@+id/editTextTextPassword"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="35dp"
             android:ems="10"
             android:hint="Password"
-            android:fontFamily="monospace"
-            android:textColor="#CFCDCD"
-            android:layout_marginBottom="35dp"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="#CFCDCD" />
 
         <Button
             android:id="@+id/SignIn"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:background="#616161"
             android:gravity="center"
             android:text="Sign In"
             android:textAlignment="center"
-            android:fontFamily="monospace"
-            android:textColor="#CFCDCD"
-            android:layout_marginTop="30dp"
-            />
+            android:textColor="#CFCDCD" />
 
         <Button
             android:id="@+id/SignUp"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:background="#616161"
             android:gravity="center"
             android:text="Sign Up"
             android:textAlignment="center"
-            android:fontFamily="monospace"
-            android:textColor="#CFCDCD"
-            android:layout_marginTop="30dp"
-            />
+            android:textColor="#CFCDCD" />
 
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/loadingAnimation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/loading" />
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -9,6 +9,8 @@ import android.widget.GridView;
 
 import com.example.minesweeper.GameEngine; //klasa generująca gre
 
+import java.util.Random;
+
 public class Grid extends GridView {
 
     public Grid(Context context , AttributeSet attrs){

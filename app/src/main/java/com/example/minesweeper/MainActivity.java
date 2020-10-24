@@ -1,15 +1,19 @@
 package com.example.minesweeper;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.minesweeper.common.CustomToast;
@@ -27,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnSignUp, btnSignIn;
     FirebaseAuth mFirebaseAuth;
 
+    ImageView loadingImage;
+
     CustomToast customToast;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -36,12 +42,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //animacja ladowania:
+        loadingImage = (ImageView)findViewById(R.id.loadingAnimation);
+        loadingImage.setBackgroundResource(R.drawable.loading_animation);
+        loadingImage.setVisibility(View.INVISIBLE);
+
+
         //tworzenie obiektu customToast
         customToast = new CustomToast(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextTextPassword);
+
+        long info;
+        info = 100L;
+
+        String longText = String.valueOf(info);
+        Log.e("Text", longText);
+
+        Long longNumber = Long.parseLong(longText);
+        Log.e("Number", ""+longNumber);
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
                @Override
@@ -92,13 +113,29 @@ public class MainActivity extends AppCompatActivity {
                     errors=true;
                 }
 
+
+
                 if(errors==false){
+
+
+                    loadingImage.setVisibility(View.VISIBLE);
+                    // Get the background, which has been compiled to an AnimationDrawable object.
+                    AnimationDrawable frameAnimation = (AnimationDrawable) loadingImage.getBackground();
+
+                    // Start the animation (looped playback by default).
+                    frameAnimation.start();
+
                     //zarejestrowanie uzytkownika
                     mFirebaseAuth.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+
+
+
                             //jezeli cos poszlo nie tak
                             if(!task.isSuccessful()){
+
+                                loadingImage.setVisibility(View.INVISIBLE);
 
                                 //wyswietl powiadomienie, ze cos poszlo nie tak.
                                 customToast.showToast("Problem with logging in, please try again");
@@ -111,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     //wyswietl powiadomienie z bledami
                     customToast.showToast("Fill the fields!");
+                    loadingImage.setVisibility(View.INVISIBLE);
                 }
             }
         });

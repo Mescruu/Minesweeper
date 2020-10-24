@@ -2,6 +2,7 @@ package com.example.minesweeper;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,13 +21,15 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainMenuActivity extends AppCompatActivity {
 
-    private Button soloGameButton, logoutButton;
+    private Button soloGameButton, multiplayerGameButton, logoutButton;
     FirebaseAuth mFirebaseAuth;
     CustomToast customToast;
 
     String playerName="";
     DatabaseReference playerRef;
     FirebaseDatabase database;
+
+    boolean exitOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
         customToast = new CustomToast(this);
 
-
+        exitOnce=true;
 
         //instancja firebaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -50,28 +53,40 @@ public class MainMenuActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
 
         soloGameButton = findViewById(R.id.newGameSolo);
+        multiplayerGameButton = findViewById(R.id.newGameMultiplayer);
+
         logoutButton = findViewById(R.id.logoutButton);
 
         //sprawdzenie czy gracz istnieje
         playerName = user.getDisplayName();
 
+        playerRef = database.getReference("players/"+playerName);
 
-        //przycisk nowej gry.
-        soloGameButton.setOnClickListener(new View.OnClickListener(){
+        //przycisk nowej gry solo.
+        soloGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(exitOnce){
+                    Intent intent = new Intent(MainMenuActivity.this, GameSettingActivity.class);
+                    intent.putExtra("GameType", "solo");
+                    startActivity(intent);
+                    finish();
+                    exitOnce=false;
+                }
+
+            }
+        });
+
+        //przycisk nowej gry multi.
+        multiplayerGameButton.setOnClickListener(new View.OnClickListener(){
 
             //w przypadku użycia przycisku restartu.
             @Override
             public void onClick(View v) {
                 //w przypadku użycia przycisku nowej gry.
 
-                if(!playerName.equals("")){
-                    playerRef = database.getReference("players/"+playerName);
                     addEventListener();
-                    playerRef.setValue("");
-                }
-
-                Intent intent = new Intent(MainMenuActivity.this, ActiveUserList.class);
-                startActivity(intent);
             }
 
         });
@@ -84,13 +99,20 @@ public class MainMenuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
 
+                /* nie usuwaj gracza
                 //usuniecie rekordu gracza
                 database.getReference("players")
                         .child(playerName)
                         .removeValue();
+                */
 
-                Intent intent = new Intent(MainMenuActivity.this, MainActivity.class);
-                startActivity(intent);
+                if(exitOnce){
+                    Intent intent = new Intent(MainMenuActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    exitOnce=false;
+                }
+
             }
 
         });
@@ -101,16 +123,21 @@ public class MainMenuActivity extends AppCompatActivity {
         playerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
                     //w razie sukcesu rozpocznij nowa aktywnosc po dodaniu gracza
                      if(!playerName.equals("")){
-                         SharedPreferences preferences = getSharedPreferences("PREFS",0);
+
+                     SharedPreferences preferences = getSharedPreferences("PREFS",0);
                      SharedPreferences.Editor editor = preferences.edit();
                      editor.putString("playerName", playerName);
                      editor.apply();
+                         if(exitOnce) {
 
-                     startActivity((new Intent(getApplicationContext(),ActiveUserList.class)));
-                     finish();
-
+                             startActivity((new Intent(getApplicationContext(), ActiveUserList.class)));
+                             finish();
+                             exitOnce=false;
+                         }
                      }
             }
 
