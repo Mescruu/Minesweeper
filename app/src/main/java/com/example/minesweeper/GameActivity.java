@@ -65,7 +65,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //ustawienie layoutu
-        setContentView(R.layout.activity_game_solo);
+        setContentView(R.layout.activity_game);
 
         //tworzenie obiektu customToast
         customToast = new CustomToast(this);
@@ -73,7 +73,6 @@ public class GameActivity extends AppCompatActivity {
         //deklaracja UI
         countdownText = findViewById(R.id.TimeText);
         loginText = findViewById(R.id.loginText);
-
         backButton = findViewById(R.id.backButton);
 
         /*--------------------MULTI---------------------*/

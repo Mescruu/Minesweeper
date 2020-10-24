@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#343434"
+    >
+
+
+  <ImageView
+      android:id="@+id/imageView"
+      android:layout_width="match_parent"
+      android:layout_height="185dp"
+      android:padding="20dp"
+      android:background="#343434"
+      app:srcCompat="@drawable/rank"/>
+
+  <TextView
+      android:id="@+id/difficultyText"
+      android:layout_width="match_parent"
+      android:layout_height="84dp"
+      android:fontFamily="monospace"
+      android:gravity="center"
+      android:lineSpacingExtra="8sp"
+      android:text="Rank of playeres!"
+      android:textAlignment="center"
+      android:textColor="#CFCDCD"
+      android:textSize="24sp"
+      android:textStyle="bold"
+      android:typeface="monospace" />
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/postitionText"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:background="#343434"
+        android:textColor="#CFCDCD"
+        android:textStyle="bold"
+        android:text="#"
+        />
+
+    <TextView
+        android:id="@+id/LoginViewText"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:background="#343434"
+        android:textColor="#CFCDCD"
+        android:textStyle="bold"
+        android:text="Login"
+        />
+
+    <TextView
+        android:id="@+id/RankViewText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#343434"
+        android:padding="10dp"
+        android:textColor="#CFCDCD"
+        android:text="Score"
+        />
+
+  </LinearLayout>
+
+  <View
+      style="@style/Divider"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:padding="0dp"
+      android:layout_margin="0dp"
+      />
+
+  <ListView
+      android:id="@+id/simpleListView"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:background="#343434"
+      android:divider="#e7c660"
+      android:dividerHeight="1dp" />
+</LinearLayout>

@@ -2,7 +2,6 @@ package com.example.minesweeper;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.example.minesweeper.GameEngine;
@@ -11,7 +10,6 @@ import com.example.minesweeper.common.CustomToast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -24,69 +22,60 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minesweeper.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.Observer;
-import java.util.Random;
 
 public class GameActivitySolo extends AppCompatActivity {
 
-    private TextView countdownText,loginText;
-    private Button backButton;
-    private Button restartButton;
+    private GameEngine gameEngine;
 
-    private GameEngine game;
+    private TextView countdownText;
+    private Button backButton;
 
     //obiekt wyswietlajacy Toasta
     public CustomToast customToast;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get the Intent that started this activity and extract the string
+        Intent intent = getIntent();
+
         //ustawienie layoutu
         setContentView(R.layout.activity_game_solo);
+
 
         //tworzenie obiektu customToast
         customToast = new CustomToast(this);
 
         //deklaracja UI
         countdownText = findViewById(R.id.TimeText);
-        loginText = findViewById(R.id.loginText);
-
         backButton = findViewById(R.id.backButton);
-        restartButton = findViewById(R.id.restartButton);
+
+        final GameEngine game =  GameEngine.getInstance(); //utworzenie obiektu gry
+        gameEngine=game;
+
+        // Utworzenie obserwatora
+        EngineObserver engObs = new EngineObserver(this);
+        // Dodanie obserwatora do obiektu game
+        game.addObserver(engObs);
+
+        /*
+        if(game.hasChanged()){
+            Log.e("","zmieniło sięę");
+            //game.notifyObservers();
+        }*/
+
+        //rozpoczecie gry
+        AlertBox(game, 1,"Start game?","The game start at the moment. Get ready!");
 
 
-            game =  GameEngine.getInstance(); //utworzenie obiektu gry
-
-            // Utworzenie obserwatora
-            EngineObserver engObs = new EngineObserver(GameActivitySolo.this);
-            // Dodanie obserwatora do obiektu game
-            game.addObserver(engObs);
-
-            AlertBox(game, 1,"Start game?","The game start at the moment. Get ready!");
+        //Utworzenie pola dialogowego
+        //https://stackoverflow.com/questions/2478517/how-to-display-a-yes-no-dialog-box-on-android
 
 
-        //przycisk restartu.
-        restartButton.setOnClickListener(new View.OnClickListener(){
 
-            //w przypadku użycia przycisku restartu.
-            @Override
-            public void onClick(View v) {
-
-                AlertBox(game, 0, "Restart game?","Are you sure? Your rank won't be saved"); //wyswietlenie powiadomienia o zakonczenie rozgrywki
-            }
-        });
-
-        /*-----------------MULTI-----------------*/
         //przycisk konca gry.
         backButton.setOnClickListener(new View.OnClickListener(){
 
@@ -99,8 +88,6 @@ public class GameActivitySolo extends AppCompatActivity {
         });
     }
 
-
-
     @Override
     public void onBackPressed() {
         customToast.showToast("Back button blocked!");
@@ -110,20 +97,16 @@ public class GameActivitySolo extends AppCompatActivity {
 
         AlertDialog.Builder dialogBox = new AlertDialog.Builder(GameActivitySolo.this, R.style.CustomAlertDialog).setTitle("You won!");
 
-        dialogBox.setMessage("Your score: "+score+" Do you want add your it to the rank?") //wiadomość w alertboxie
-                .setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                dialog.dismiss(); //wyłacz dialog
-                            }
-                        })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        dialogBox.setMessage("Your score: "+score+".") //wiadomość w alertboxie
+                .setNegativeButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing
+                        gameEngine.deleteObservers();
+
                         Intent intent = new Intent(GameActivitySolo.this, MainMenuActivity.class);
                         startActivity(intent);
+
                         finish();
 
                     }
@@ -136,21 +119,13 @@ public class GameActivitySolo extends AppCompatActivity {
 
         AlertDialog.Builder dialogBox = new AlertDialog.Builder(GameActivitySolo.this, R.style.CustomAlertDialog).setTitle("You lost!");
 
-        dialogBox.setMessage("Your score: "+score+" Do you want play again?") //wiadomość w alertboxie
-                .setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                //zresetuj aktywnosc
-                                Intent intent = new Intent(GameActivitySolo.this, GameActivitySolo.class);
-                                startActivity(intent);
-
-                            }
-                        })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        dialogBox.setMessage("Your score: "+score+" Go back to main menu?") //wiadomość w alertboxie
+                .setNegativeButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing
+                        gameEngine.deleteObservers();
+
                         Intent intent = new Intent(GameActivitySolo.this, MainMenuActivity.class);
                         startActivity(intent);
                         finish();
@@ -180,15 +155,12 @@ public class GameActivitySolo extends AppCompatActivity {
                                     case 1: //Game start
                                         StartGame(game);//rozpoczecie gry
                                         break;
-                                    case 0: //Game restart
-                                        game.stopGame(); //zakoncz rozgrywkę
-                                        StartGame(game);
-                                        break;
                                     case -1: //exit game
                                         Intent intent = new Intent(GameActivitySolo.this, MainMenuActivity.class);
                                         startActivity(intent);
                                         finish();
 
+                                        dialog.dismiss();
                                         break;
                                     default:
 
@@ -216,7 +188,6 @@ public class GameActivitySolo extends AppCompatActivity {
     }
 
     public void StartGame(GameEngine game){
-
         //po 5 sekundach wyświetlenie rozpoczęcie nowej gry
         game.createGrid(this); //rozpoczecie gry
 
@@ -224,10 +195,30 @@ public class GameActivitySolo extends AppCompatActivity {
         game.windUpTheClock(countdownText);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        finish();
 
+    protected void onPause() {
+        super.onPause();
+
+        if(gameEngine.countObservers()>0)
+        gameEngine.deleteObservers();
+        gameEngine.stopTimer();
+
+
+        finish();
     }
+
+    protected void onStop() {
+        super.onStop();
+
+        gameEngine.stopGame();
+
+        if(gameEngine.countObservers()>0)
+        gameEngine.deleteObservers();
+
+        gameEngine.stopTimer();
+
+        finish();
+    }
+
+
 }

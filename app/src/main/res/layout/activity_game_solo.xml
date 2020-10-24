@@ -12,77 +12,31 @@ tools:context="GameActivitySolo">
     android:background="#343434"
     android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/timeTextHeader"
         android:layout_width="match_parent"
-        android:layout_height="127dp"
-        android:orientation="horizontal">
+        android:layout_height="35dp"
+        android:background="#343434"
+        android:fontFamily="monospace"
+        android:gravity="fill_vertical"
+        android:text="Time left"
+        android:textAlignment="center"
+        android:textColor="#CFCDCD"
+        android:typeface="monospace" />
 
-        <LinearLayout
-            android:layout_width="201dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/timeTextHeader"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:background="#343434"
-                android:fontFamily="monospace"
-                android:gravity="fill_vertical"
-                android:text="Time left"
-                android:textAlignment="center"
-                android:textColor="#CFCDCD"
-                android:typeface="monospace" />
-
-            <TextView
-                android:id="@+id/TimeText"
-                android:layout_width="match_parent"
-                android:layout_height="92dp"
-                android:background="#343434"
-                android:fontFamily="monospace"
-                android:gravity="fill_vertical"
-                android:layoutDirection="inherit"
-                android:text="00.00"
-                android:textAlignment="center"
-                android:textColor="#CFCDCD"
-                android:textSize="36sp"
-                android:typeface="monospace" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/LoginTextHeader"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:background="#343434"
-                android:fontFamily="monospace"
-                android:gravity="fill_vertical"
-                android:text="Opponent"
-                android:textAlignment="center"
-                android:textColor="#CFCDCD"
-                android:typeface="monospace" />
-
-            <TextView
-                android:id="@+id/loginText"
-                android:layout_width="match_parent"
-                android:layout_height="92dp"
-                android:autoText="true"
-                android:background="#343434"
-                android:fontFamily="monospace"
-                android:gravity="fill_vertical"
-                android:lineSpacingExtra="8sp"
-                android:text="TextView"
-                android:textAlignment="center"
-                android:textColor="#CFCDCD"
-                android:textSize="18sp" />
-
-        </LinearLayout>
-    </LinearLayout>
+    <TextView
+        android:id="@+id/TimeText"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        android:background="#343434"
+        android:fontFamily="monospace"
+        android:gravity="fill_vertical"
+        android:layoutDirection="inherit"
+        android:text="00.00"
+        android:textAlignment="center"
+        android:textColor="#CFCDCD"
+        android:textSize="36sp"
+        android:typeface="monospace" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -100,17 +54,6 @@ tools:context="GameActivitySolo">
             android:backgroundTintMode="src_over"
             android:fontFamily="monospace"
             android:text="Back"
-            android:typeface="monospace" />
-
-        <Button
-            android:id="@+id/restartButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#616161"
-            android:backgroundTintMode="src_over"
-            android:fontFamily="monospace"
-            android:text="Restart"
             android:typeface="monospace" />
 
     </LinearLayout>

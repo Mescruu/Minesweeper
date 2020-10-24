@@ -63,6 +63,8 @@ public class GameEngine extends Observable {
         customToast = new CustomToast(context);
         customToast.showToast("New game started");
 
+        Log.e("player in game", ""+playerInGame);
+
         this.context = context; //dodanie go do kontekstu
 
         // create the grid and store it
@@ -122,6 +124,7 @@ public class GameEngine extends Observable {
                 //jezeli pole to bomba to koniec gry
                 if( getCellAt(x,y).isBomb() ){
                     onGameLost(false); //wywolanie funkcji koniec gry
+                    playerInGame=false;
                 }else{
                     long bonusTime = getCellAt(x,y).getValue()*1000; //dodawanie 1 sekundy za "punkt"
                     //customToast.showToast("seconds added");
@@ -130,8 +133,8 @@ public class GameEngine extends Observable {
             }
 
         }
-
-        checkEnd(); //
+    if(playerInGame)
+        checkEnd();
     }
 
     private boolean checkEnd(){
@@ -268,6 +271,7 @@ public class GameEngine extends Observable {
         TimeleftText +=seconds;
 
         Log.e("",TimeleftText);
+        Log.e("player in game", ""+playerInGame);
 
         countdownText.setText(TimeleftText); //ustawienie czasu
 

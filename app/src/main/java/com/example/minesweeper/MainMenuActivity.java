@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainMenuActivity extends AppCompatActivity {
 
-    private Button soloGameButton, multiplayerGameButton, logoutButton;
+    private Button soloGameButton, multiplayerGameButton, logoutButton, rankButton;
     FirebaseAuth mFirebaseAuth;
     CustomToast customToast;
 
@@ -30,6 +30,7 @@ public class MainMenuActivity extends AppCompatActivity {
     FirebaseDatabase database;
 
     boolean exitOnce;
+    boolean firstChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class MainMenuActivity extends AppCompatActivity {
         customToast = new CustomToast(this);
 
         exitOnce=true;
+        firstChange=true;
 
         //instancja firebaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -56,7 +58,7 @@ public class MainMenuActivity extends AppCompatActivity {
         multiplayerGameButton = findViewById(R.id.newGameMultiplayer);
 
         logoutButton = findViewById(R.id.logoutButton);
-
+        rankButton = findViewById(R.id.rankButton);
         //sprawdzenie czy gracz istnieje
         playerName = user.getDisplayName();
 
@@ -91,6 +93,24 @@ public class MainMenuActivity extends AppCompatActivity {
 
         });
 
+        //przycisk rankingu.
+        rankButton.setOnClickListener(new View.OnClickListener(){
+
+            //w przypadku użycia przycisku restartu.
+            @Override
+            public void onClick(View v) {
+                //w przypadku użycia przycisku nowej gry.
+
+                if(exitOnce){
+                    Intent intent = new Intent(MainMenuActivity.this, RankActivity.class);
+                    startActivity(intent);
+                    finish();
+                    exitOnce=false;
+                }
+            }
+
+        });
+
         //przycisk wylogowania.
         logoutButton.setOnClickListener(new View.OnClickListener(){
 
@@ -119,11 +139,19 @@ public class MainMenuActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        customToast.showToast("Back button blocked!");
+    }
+
     private void addEventListener(){
         playerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                    if(!firstChange){
+                        customToast.showToast("Your score has changed!");
+                    }
 
                     //w razie sukcesu rozpocznij nowa aktywnosc po dodaniu gracza
                      if(!playerName.equals("")){
@@ -134,6 +162,7 @@ public class MainMenuActivity extends AppCompatActivity {
                      editor.apply();
                          if(exitOnce) {
 
+                             firstChange=false;
                              startActivity((new Intent(getApplicationContext(), ActiveUserList.class)));
                              finish();
                              exitOnce=false;

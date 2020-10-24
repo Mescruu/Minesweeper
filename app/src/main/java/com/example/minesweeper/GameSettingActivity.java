@@ -72,9 +72,18 @@ public class GameSettingActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(GameSettingActivity.this, GameActivitySolo.class);
                 startActivity(intent);
+                finish();
             }
 
         });
 
     }
+
+    public void onBackPressed() {
+
+        Intent intent = new Intent(GameSettingActivity.this, MainMenuActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

@@ -38,7 +38,7 @@ public class EngineObserver implements Observer {
             }
             if(massageArray[0].equals("userlost")){
                 if(gameActivity==null){ //jezeli to gra solowa
-                    gameActivitySolo.gameWin(massageArray[1]);
+                    gameActivitySolo.gameLost(massageArray[1]);
                 }else{ //jezeli to gra multi
                     gameActivity.gameLost(massageArray[1]);
                 }
