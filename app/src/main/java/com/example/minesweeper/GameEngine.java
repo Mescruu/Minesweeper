@@ -43,12 +43,13 @@ public class GameEngine extends Observable {
     private Cell[][] MinesweeperGrid = new Cell[WIDTH][HEIGHT]; //nowy typ pol z szerokoscia i dlugoscia
 
 
+    //Dzięki implementacji leniwego tworzenia obiektu (ang. lazy loading) można odwlec w czasie moment kosztownego
+    // budowania instancji obiektu oraz potencjalnie oszczędzić zasoby, jeżeli nie będzie potrzeby wcale jego utworzenia.
     public static GameEngine getInstance() {
         if( instance == null ){
             instance = new GameEngine();
         }
 
-        //tworzenie obiektu customToast
         return instance;
     }
 

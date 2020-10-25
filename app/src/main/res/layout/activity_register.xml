@@ -24,7 +24,7 @@
         <TextView
             android:id="@+id/LogoText"
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="50dp"
             android:gravity="center"
             android:lineSpacingExtra="8sp"
             android:shadowColor="#e7c660"
@@ -46,7 +46,7 @@
         <TextView
             android:id="@+id/Info"
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="50dp"
             android:gravity="center"
             android:lineSpacingExtra="8sp"
             android:text="REGISTER"

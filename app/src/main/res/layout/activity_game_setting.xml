@@ -16,18 +16,18 @@
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="331dp"
-            android:layout_height="134dp"
+            android:layout_height="140dp"
             android:padding="10dp"
             app:srcCompat="@drawable/settings" />
 
         <TextView
             android:id="@+id/difficultyText"
             android:layout_width="match_parent"
-            android:layout_height="117dp"
+            android:layout_height="100dp"
             android:fontFamily="monospace"
             android:gravity="center"
             android:lineSpacingExtra="8sp"
-            android:text="Set difficulty level"
+            android:text="SET DIFFICULTY LEVEL"
             android:textAlignment="center"
             android:textColor="#CFCDCD"
             android:textSize="24sp"

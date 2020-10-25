@@ -15,7 +15,7 @@ public abstract class BaseCell extends View {
     private boolean isFlagged; //czy jest zaflagowane
 
     private int x , y; //pozycja pola
-    private int position; //pozycja w grze?
+    private int position; //pozycja w grze
 
     //konstruktor - umozliwia dziedziczenie po widoku, do tworzenia pól
     public BaseCell(Context context ){
@@ -73,7 +73,7 @@ public abstract class BaseCell extends View {
         this.isClicked = true;
         this.isRevealed = true;
 
-        invalidate(); //funkcja zmuszajaca do przerysowac obraz
+        invalidate(); //funkcja zmuszajaca by przerysowac obraz
     }
 
     //czy pole jest zaflagowane

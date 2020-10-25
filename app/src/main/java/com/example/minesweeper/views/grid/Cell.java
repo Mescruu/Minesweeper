@@ -20,7 +20,7 @@ public class Cell extends BaseCell implements View.OnClickListener , View.OnLong
         //odwolanie sie do nadklasy - klasy nad daną klasą w której jesteśmy
         super(context);
 
-        //
+        //ustawienie pozycji przycisku
         setPosition(x, y);
 
         setOnClickListener(this);
@@ -29,7 +29,7 @@ public class Cell extends BaseCell implements View.OnClickListener , View.OnLong
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
+        super.onMeasure(widthMeasureSpec, widthMeasureSpec); //ustawienie szerokości i wysokosci rysowanego obrazu
     }
 
     @Override //zwykle nacisniecie pola
@@ -135,6 +135,7 @@ public class Cell extends BaseCell implements View.OnClickListener , View.OnLong
                 break;
         }
 
+        //w jakim miejscu
         drawable.setBounds(0, 0, getWidth(), getHeight());
         drawable.draw(canvas);
     }

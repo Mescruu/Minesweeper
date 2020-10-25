@@ -28,8 +28,8 @@
         <item name="android:layout_width">300dp</item>
         <item name="android:layout_height">2dp</item>
         <item name="android:background">#e7c660</item>
-        <item name="android:layout_marginBottom">20dp</item>
-        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
 
     </style>
 

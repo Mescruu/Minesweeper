@@ -17,14 +17,14 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="185dp"
+            android:layout_height="140dp"
             android:padding="20dp"
             app:srcCompat="@drawable/logo" />
 
         <TextView
             android:id="@+id/LogoText"
             android:layout_width="match_parent"
-            android:layout_height="93dp"
+            android:layout_height="50dp"
             android:gravity="center"
             android:lineSpacingExtra="8sp"
             android:shadowColor="#e7c660"

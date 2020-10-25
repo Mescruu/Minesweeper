@@ -16,9 +16,10 @@ public class Grid extends GridView {
     public Grid(Context context , AttributeSet attrs){
         super(context,attrs);
 
+        //pobierz istancje silnika gry
         GameEngine.getInstance().createGrid(context);
         setNumColumns(GameEngine.WIDTH); //ustawienie ilosci kolumn
-        setAdapter(new GridAdapter()); //
+        setAdapter(new GridAdapter()); //ustaw adapter
     }
 
 
@@ -27,7 +28,7 @@ public class Grid extends GridView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    //inner class - Adapter GridAdapter rozszerzajacy BaseAdapter
+    //inner class - Adapter GridAdapter rozszerzajacy BaseAdapter, pobiera rozmiar planszy
     private class GridAdapter extends BaseAdapter {
 
         @Override

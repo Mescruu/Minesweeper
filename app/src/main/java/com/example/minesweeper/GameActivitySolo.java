@@ -4,26 +4,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.minesweeper.GameEngine;
-import com.example.minesweeper.MainActivity;
 import com.example.minesweeper.common.CustomToast;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.minesweeper.R;
-
-import java.util.Observer;
 
 public class GameActivitySolo extends AppCompatActivity {
 
@@ -32,6 +21,8 @@ public class GameActivitySolo extends AppCompatActivity {
     private TextView countdownText;
     private Button backButton;
 
+    private GameEngine game;
+
     //obiekt wyswietlajacy Toasta
     public CustomToast customToast;
 
@@ -39,12 +30,8 @@ public class GameActivitySolo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-
         //ustawienie layoutu
         setContentView(R.layout.activity_game_solo);
-
 
         //tworzenie obiektu customToast
         customToast = new CustomToast(this);
@@ -53,28 +40,18 @@ public class GameActivitySolo extends AppCompatActivity {
         countdownText = findViewById(R.id.TimeText);
         backButton = findViewById(R.id.backButton);
 
-        final GameEngine game =  GameEngine.getInstance(); //utworzenie obiektu gry
-        gameEngine=game;
+        game =  GameEngine.getInstance(); //utworzenie obiektu gry
 
         // Utworzenie obserwatora
         EngineObserver engObs = new EngineObserver(this);
         // Dodanie obserwatora do obiektu game
         game.addObserver(engObs);
 
-        /*
-        if(game.hasChanged()){
-            Log.e("","zmieniło sięę");
-            //game.notifyObservers();
-        }*/
-
         //rozpoczecie gry
         AlertBox(game, 1,"Start game?","The game start at the moment. Get ready!");
 
-
         //Utworzenie pola dialogowego
         //https://stackoverflow.com/questions/2478517/how-to-display-a-yes-no-dialog-box-on-android
-
-
 
         //przycisk konca gry.
         backButton.setOnClickListener(new View.OnClickListener(){
@@ -101,13 +78,7 @@ public class GameActivitySolo extends AppCompatActivity {
                 .setNegativeButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing
-                        gameEngine.deleteObservers();
-
-                        Intent intent = new Intent(GameActivitySolo.this, MainMenuActivity.class);
-                        startActivity(intent);
-
-                        finish();
+                        exitGame(dialog);
 
                     }
                 }).setCancelable(false) //uniemożliwia nacisniecia poza box
@@ -123,13 +94,7 @@ public class GameActivitySolo extends AppCompatActivity {
                 .setNegativeButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing
-                        gameEngine.deleteObservers();
-
-                        Intent intent = new Intent(GameActivitySolo.this, MainMenuActivity.class);
-                        startActivity(intent);
-                        finish();
-
+                        exitGame(dialog);
                     }
                 }).setCancelable(false) //uniemożliwia nacisniecia poza box
                 .create()
@@ -156,11 +121,7 @@ public class GameActivitySolo extends AppCompatActivity {
                                         StartGame(game);//rozpoczecie gry
                                         break;
                                     case -1: //exit game
-                                        Intent intent = new Intent(GameActivitySolo.this, MainMenuActivity.class);
-                                        startActivity(intent);
-                                        finish();
-
-                                        dialog.dismiss();
+                                        exitGame(dialog);
                                         break;
                                     default:
 
@@ -174,10 +135,7 @@ public class GameActivitySolo extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing
                         if(option==1){
-                            Intent intent = new Intent(GameActivitySolo.this, MainMenuActivity.class);
-                            startActivity(intent);
-                            finish();
-
+                            exitGame(dialog);
                         }else{
                             dialog.dismiss();
                         }
@@ -189,12 +147,27 @@ public class GameActivitySolo extends AppCompatActivity {
 
     public void StartGame(GameEngine game){
         //po 5 sekundach wyświetlenie rozpoczęcie nowej gry
-        game.createGrid(this); //rozpoczecie gry
+      //  game.createGrid(this); //rozpoczecie gry
 
         //załaczenie tekstu zegara oraz jego zresetowanie
         game.windUpTheClock(countdownText);
     }
 
+    public void exitGame(DialogInterface dialog){
+
+
+                game.deleteObservers();
+                game.stopTimer();
+
+                dialog.dismiss(); //wylacz dialogbox
+
+                Intent intent = new Intent(GameActivitySolo.this, MainMenuActivity.class);
+                startActivity(intent);
+                finish();
+    }
+
+
+    /*
 
     protected void onPause() {
         super.onPause();
@@ -219,6 +192,7 @@ public class GameActivitySolo extends AppCompatActivity {
 
         finish();
     }
+    */
 
 
 }
