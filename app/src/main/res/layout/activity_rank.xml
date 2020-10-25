@@ -24,7 +24,7 @@
       android:fontFamily="monospace"
       android:gravity="center"
       android:lineSpacingExtra="8sp"
-      android:text="Rank of playeres!"
+      android:text="Ranking of playeres!"
       android:textAlignment="center"
       android:textColor="#CFCDCD"
       android:textSize="24sp"

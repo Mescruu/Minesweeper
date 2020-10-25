@@ -122,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                                     //przy tworzeniu gracza dodatkowo ustaw jego rekord w bazie (dla rankingu)
                                                     FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                                    database.getReference("players/"+name).setValue("");
+                                                    database.getReference("players/"+name+"/Start Value").setValue("0");
 
                                                     startActivity((new Intent(RegisterActivity.this, MainMenuActivity.class)));
                                                     loadingImage.setVisibility(View.INVISIBLE);
