@@ -50,8 +50,6 @@ public class ActiveUserList extends AppCompatActivity {
     DatabaseReference roomsRef;
     DatabaseReference playersRef;
 
-    DatabaseReference roomRef_difficulty; //referencja do poziomu trudnosci pokoju
-
     private ValueEventListener roomListener;
     private ValueEventListener roomsListener;
     private ValueEventListener playersListener;
@@ -71,10 +69,6 @@ public class ActiveUserList extends AppCompatActivity {
         Log.e("Active user list", "activate!");
 
         database = FirebaseDatabase.getInstance();
-
-        //pobierz nazwe gracza i zapisz jego nazwe jako nazwe pokoju
-       // SharedPreferences preferences = getSharedPreferences("PREFS",0);
-       // playerName = preferences.getString("playerName", "");
 
         //pobranie z firebase nazwy uzytkownika
         //instancja firebaseAuth
@@ -110,11 +104,12 @@ public class ActiveUserList extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //join an existing room and add yourself as player2
                 roomName = roomsList.get(position);//ustal nazwe pokoju z listy
+                roomName = roomName.substring(0, roomName.length() - 14); //odjęcie od nazwy pokoju tekstu np:  " difficulty: 1"
+
+
                 seed = Long.parseLong(seedList.get(position)); //ustal seed z pobranej listy seedów
 
-               // String difficultyString = roomName.substring(roomName.length() - 1);
                 String difficultyString = difficultyList.get(position); //ustal poziom trudnosci z pobranej listy seedów
 
                 switch(difficultyString) {
@@ -398,7 +393,7 @@ public class ActiveUserList extends AppCompatActivity {
 
                     if(!s.hasChild("remove")&&!s.hasChild("played")&&!s.getKey().equals(playerName)){ //jezeli pokoj nie jest do usuniecia i nie jest rozgrywany przez osobe tworzaca pokoj i nie jest to pokoj stworzony przez nas
                             Log.e("Rooms:",s.getKey());
-                            roomsList.add(s.getKey()); //dodanie do listy pokoju
+                            roomsList.add(s.getKey()+" difficulty: "+s.child("difficulty").getValue().toString()); //dodanie do listy pokoju
 
                             Log.e("s.child(s.getKey()):",s.child("seed").getValue().toString());
                             seedList.add(s.child("seed").getValue().toString()); //dodanie do listy seeda
@@ -407,7 +402,7 @@ public class ActiveUserList extends AppCompatActivity {
                         difficultyList.add(s.child("difficulty").getValue().toString()); //dodanie do listy poziomu trudnosci
 
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(ActiveUserList.this,
-                                    android.R.layout.simple_list_item_1, roomsList);
+                                    R.layout.active_user_list, roomsList);
                             listView.setAdapter(adapter);
                     }
                 }

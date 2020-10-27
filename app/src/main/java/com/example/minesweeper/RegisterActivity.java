@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,12 +15,17 @@ import android.widget.TextView;
 
 import com.example.minesweeper.common.CustomToast;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -27,7 +33,10 @@ public class RegisterActivity extends AppCompatActivity {
     Button btnSignUp, btnSignIn;
     FirebaseAuth mFirebaseAuth;
     String name;
+    String email;
+    String pwd;
 
+    boolean errors;
     CustomToast customToast;
 
     ImageView loadingImage;
@@ -57,10 +66,10 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                boolean errors = false;
+                errors = false;
 
-                String email = emailId.getText().toString();
-                String pwd = password.getText().toString();
+               email = emailId.getText().toString();
+                pwd = password.getText().toString();
                 name = nick.getText().toString();
 
                 if(email.isEmpty()){
@@ -77,64 +86,40 @@ public class RegisterActivity extends AppCompatActivity {
 
                 //sprwadzenie czy wypełnił pola
                 if(name.isEmpty()){
-                    password.setError("Please enter nick!");
-                    password.requestFocus();
+                    nick.setError("Please enter nick!");
+                    nick.requestFocus();
                     errors=true;
-                }
-
-                if(errors==false){
-                    loadingImage.setVisibility(View.VISIBLE);
-                    // Get the background, which has been compiled to an AnimationDrawable object.
-                    AnimationDrawable frameAnimation = (AnimationDrawable) loadingImage.getBackground();
-
-                    // Start the animation (looped playback by default).
-                    frameAnimation.start();
-
-
-                    //zarejestrowanie uzytkownika
-                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                }else{
+                    FirebaseDatabase firebaseDatabase= FirebaseDatabase.getInstance();
+                    DatabaseReference playerRef =  firebaseDatabase.getReference("players");
+                    playerRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-
-
-                            //jezeli cos poszlo nie tak
-                            if(!task.isSuccessful()){
-
-                                //wyswietl powiadomienie, ze cos poszlo nie tak.
-                                customToast.showToast("Problem with singing in, please try again");
-                                loadingImage.setVisibility(View.INVISIBLE);
-
-                            }else{ //wszystko poszlo dobrze
-                                //rozpocznij dalsza aktwynosc
-
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(name) //ustawienie nazwy
-                                        .build();
-
-                                //w momencie gdy nazwa gracza została dodana
-                                user.updateProfile(profileUpdates)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-
-                                                    //przy tworzeniu gracza dodatkowo ustaw jego rekord w bazie (dla rankingu)
-                                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                                    database.getReference("players/"+name+"/Start Value").setValue("0");
-
-                                                    startActivity((new Intent(RegisterActivity.this, MainMenuActivity.class)));
-                                                    loadingImage.setVisibility(View.INVISIBLE);
-
-                                                }
-                                            }
-                                        });
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            //Sprawdz każdego użytkownika
+                            Iterable<DataSnapshot> players = snapshot.getChildren();
+                            for(DataSnapshot player:players) {
+                            if(player.getKey().toString().equals(name)){//jezeli istnieje rekord o takiej nazwie jaka wpisuje nowy uzytkownik
+                                errors=true;
+                                customToast.showToast("This username is taken, try another one!");
+                            }
 
                             }
+
+                            if(errors==false){
+                                registerUser();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
                     });
-                }else{
+
+
+                }
+
+                if(errors==true){
                     //wyswietl powiadomienie z bledami
                     customToast.showToast("Fill the fields!");
                     loadingImage.setVisibility(View.INVISIBLE);
@@ -153,5 +138,62 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private  void registerUser(){
+        loadingImage.setVisibility(View.VISIBLE);
+        // Get the background, which has been compiled to an AnimationDrawable object.
+        AnimationDrawable frameAnimation = (AnimationDrawable) loadingImage.getBackground();
+
+        // Start the animation (looped playback by default).
+        frameAnimation.start();
+
+
+        //zarejestrowanie uzytkownika
+        mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                //jezeli cos poszlo nie tak
+                if(!task.isSuccessful()){
+
+                    //wyswietl powiadomienie, ze cos poszlo nie tak.
+                    customToast.showToast("Problem with singing in, please try again");
+                    loadingImage.setVisibility(View.INVISIBLE);
+
+                }else{ //wszystko poszlo dobrze
+                    //rozpocznij dalsza aktwynosc
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(name) //ustawienie nazwy
+                            .build();
+
+                    //w momencie gdy nazwa gracza została dodana
+                    user.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+
+                                        //przy tworzeniu gracza dodatkowo ustaw jego rekord w bazie (dla rankingu)
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                        database.getReference("players/"+name+"/Start Value").setValue("0");
+
+                                        startActivity((new Intent(RegisterActivity.this, MainMenuActivity.class)));
+                                        loadingImage.setVisibility(View.INVISIBLE);
+
+                                    }
+                                }
+                            });
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                customToast.showToast(e.getLocalizedMessage());
+            }});
     }
 }
