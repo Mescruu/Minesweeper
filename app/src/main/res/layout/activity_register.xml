@@ -127,7 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
             android:visibility="invisible"
-            app:srcCompat="@drawable/loading" />
+            />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
